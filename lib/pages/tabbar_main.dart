@@ -5,6 +5,7 @@ import 'package:concrete_mixdesign_for_study/pages/step4.dart';
 import 'package:concrete_mixdesign_for_study/pages/step5.dart';
 import 'package:concrete_mixdesign_for_study/pages/step6.dart';
 import 'package:concrete_mixdesign_for_study/pages/step7.dart';
+import 'package:concrete_mixdesign_for_study/widgets/splash.dart';
 import 'package:flutter/material.dart';
 
 class TabbarMain extends StatefulWidget {
@@ -38,29 +39,40 @@ class _TabbarMainState extends State<TabbarMain>
         toolbarHeight: 100,
         title: Column(
           children: [
-            const SizedBox(height: 10.0),
-            const Text(
+            const SizedBox(height: 30.0),
+            Text(
               'Concrete mixdesign for study',
               style: TextStyle(
-                color: Colors.black,
+                color: Colors.green[100],
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 10.0),
+            const SizedBox(height: 5.0),
             Text(
-              '*หมายเหตุ ต้องทำทุก Step จนถึง Step 7',
-              style: TextStyle(color: Colors.grey.shade400, fontSize: 15),
+              '*หมายเหตุ เริ่มที่ Step 1 จนถึง 7 ไม่สามารถข้าม Step ได้',
+              style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
             ),
-            const SizedBox(height: 10.0),
+            // const SizedBox(height: 5.0),
             Row(
-              children: const [
-                Text(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
                   'Step',
                   style: TextStyle(
-                      color: Colors.black,
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 15),
                 ),
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => SplashPage()),
+                          (Route<dynamic> route) => false);
+                    },
+                    child: const Text(
+                      "Reset",
+                      style: TextStyle(color: Colors.red, fontSize: 15),
+                    ))
               ],
             )
           ],

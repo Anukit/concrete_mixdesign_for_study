@@ -28,7 +28,6 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
   // ใส่เพื่อเมื่อสลับหน้า(Tab) ให้ใช้ข้อมูลเดิมที่เคยโหลดแล้ว ไม่ต้องโหลดใหม่
   @override
   bool get wantKeepAlive => true;
-  String valuetest = "240";
   bool nexttab = false;
   final formKey = GlobalKey<FormState>();
   TextEditingController large_add = TextEditingController();
@@ -40,6 +39,27 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     super.initState();
+    getListData();
+  }
+
+  getListData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> savedStrList2 = prefs.getStringList('listStep2')!;
+    List<String> savedStrList4 = prefs.getStringList('listStep4')!;
+    setState(() {
+      large_add.text = savedStrList2[1];
+      if (savedStrList4.isNotEmpty) {
+        fm_value.text = savedStrList4[0];
+        ratio_add.text = savedStrList4[1];
+        stone_value.text = savedStrList4[2];
+        weight_dry.text = savedStrList4[3];
+      } else {
+        fm_value.text = "2.8";
+        ratio_add.text = "0.62";
+        stone_value.text = "1600";
+        weight_dry.text = "";
+      }
+    });
   }
 
   @override
@@ -104,7 +124,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build1() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -116,7 +136,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
               flex: 1,
               child: TextFormField(
                 readOnly: true,
-                initialValue: "20",
+                controller: large_add,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -146,7 +166,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build2() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -157,7 +177,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
           Expanded(
               flex: 1,
               child: TextFormField(
-                initialValue: "2.7",
+                controller: fm_value,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -182,7 +202,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build3() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -190,7 +210,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
           Expanded(
               flex: 1,
               child: TextFormField(
-                initialValue: "0.63",
+                controller: ratio_add,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -215,7 +235,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build4() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -224,7 +244,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
           Expanded(
               flex: 1,
               child: TextFormField(
-                initialValue: "1600",
+                controller: stone_value,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -249,7 +269,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build5() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -257,6 +277,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
           Expanded(
               flex: 1,
               child: TextFormField(
+                controller: weight_dry,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -265,9 +286,9 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
                       TextStyle(fontSize: 18, color: Colors.grey.shade600),
                   errorStyle: const TextStyle(color: Colors.red, fontSize: 14),
                 ),
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(context, errorText: "กรอกค่า"),
-                ]),
+                // validator: FormBuilderValidators.compose([
+                //   FormBuilderValidators.required(context, errorText: "กรอกค่า"),
+                // ]),
                 onSaved: (value) {
                   weight_dry.text = value!;
                 },
@@ -308,9 +329,11 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
           if (formKey.currentState!.validate()) {
             setState(() {
               nexttab = true;
+              weight_dry.text = (double.parse(ratio_add.text) *
+                      double.parse(stone_value.text))
+                  .toStringAsFixed(0);
             });
             listStep4.clear();
-            listStep4.add(large_add.text);
             listStep4.add(fm_value.text);
             listStep4.add(ratio_add.text);
             listStep4.add(stone_value.text);

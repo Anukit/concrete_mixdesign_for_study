@@ -36,9 +36,30 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
   TextEditingController amount_water = TextEditingController();
   TextEditingController bubble = TextEditingController();
   List<String> listStep2 = [];
+
   @override
   void initState() {
     super.initState();
+    getListData();
+  }
+
+  getListData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> savedStrList = prefs.getStringList('listStep2')!;
+    print("listStep2 = ${listStep2}");
+    setState(() {
+      if (savedStrList.isNotEmpty) {
+        slump.text = savedStrList[0];
+        maxofAdd.text = savedStrList[1];
+        amount_water.text = savedStrList[2];
+        bubble.text = savedStrList[3];
+      } else {
+        slump.text = "8";
+        maxofAdd.text = "20";
+        amount_water.text = "200";
+        bubble.text = "2";
+      }
+    });
   }
 
   @override
@@ -98,7 +119,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build1() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -106,7 +127,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
           Expanded(
               flex: 1,
               child: TextFormField(
-                initialValue: "8",
+                controller: slump,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -136,7 +157,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build2() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -144,7 +165,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
           Expanded(
               flex: 1,
               child: TextFormField(
-                initialValue: "20",
+                controller: maxofAdd,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -174,7 +195,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build3() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -182,7 +203,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
           Expanded(
               flex: 1,
               child: TextFormField(
-                initialValue: "185",
+                controller: amount_water,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -207,7 +228,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build4() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -215,7 +236,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
           Expanded(
               flex: 1,
               child: TextFormField(
-                initialValue: "2",
+                controller: bubble,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(

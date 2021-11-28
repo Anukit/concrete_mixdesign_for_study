@@ -1,4 +1,5 @@
 import 'package:concrete_mixdesign_for_study/pages/tabbar_main.dart';
+import 'package:concrete_mixdesign_for_study/utility/total_utility.dart';
 import 'package:flutter/material.dart';
 import 'package:splash_screen_view/SplashScreenView.dart';
 
@@ -10,6 +11,12 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+  @override
+  void initState() {
+    super.initState();
+    clearDataList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SplashScreenView(

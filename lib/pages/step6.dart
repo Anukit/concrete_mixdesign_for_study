@@ -3,6 +3,7 @@ import 'package:concrete_mixdesign_for_study/widgets/totalwidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Step6 extends StatelessWidget {
   Step6();
@@ -34,15 +35,50 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
   TextEditingController ag_value = TextEditingController();
   TextEditingController ms_value = TextEditingController();
   TextEditingController mg_value = TextEditingController();
-  String step6_index1 = "";
-  String step6_index2 = "";
-  String step6_index3 = "";
-  String step6_index4 = "";
-  String step6_index5 = "";
+  String r1_waterFine = "";
+  String r2_waterCoarse = "";
+  String r3_actWater = "";
+  String r4_fineTune = "";
+  String r41_fineTune = ""; //ปรับแก้น้ำหนักละเอียดตรง 1.06
+  String r5_coarseTune = "";
+  String r51_coarseTune = ""; //ปรับแก้น้ำหนักหยาบตรง 1.02
+  //ข้อมูลตารางอื่น
+  String step5_wetSand = "";
+  String step4_weight_dry = "";
+  String step2_amount_water = "";
+  // String step5_wetSand = "";
+  // String step4_weight_dry = "";
+  List<String> listStep6 = [];
 
   @override
   void initState() {
     super.initState();
+    getListData();
+  }
+
+  getListData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> savedStrList2 = prefs.getStringList('listStep2')!;
+    List<String> savedStrList4 = prefs.getStringList('listStep4')!;
+    List<String> savedStrList5 = prefs.getStringList('listStep5')!;
+    List<String> savedStrList6 = prefs.getStringList('listStep6')!;
+    setState(() {
+      print("savedStrList6 = ${savedStrList6}");
+      step5_wetSand = savedStrList5[9];
+      step4_weight_dry = savedStrList4[3];
+      step2_amount_water = savedStrList2[2];
+      if (savedStrList6.isNotEmpty) {
+        as_value.text = savedStrList6[0];
+        ag_value.text = savedStrList6[1];
+        ms_value.text = savedStrList6[2];
+        mg_value.text = savedStrList6[3];
+      } else {
+        as_value.text = "0.7";
+        ag_value.text = "1";
+        ms_value.text = "6";
+        mg_value.text = "2";
+      }
+    });
   }
 
   @override
@@ -94,7 +130,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build1() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -113,7 +149,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
           Expanded(
               flex: 1,
               child: TextFormField(
-                initialValue: "0.7",
+                controller: as_value,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -143,7 +179,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build2() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -162,7 +198,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
           Expanded(
               flex: 1,
               child: TextFormField(
-                initialValue: "1",
+                controller: ag_value,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -192,7 +228,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build3() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -211,7 +247,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
           Expanded(
               flex: 1,
               child: TextFormField(
-                initialValue: "6",
+                controller: ms_value,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -241,7 +277,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build4() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -260,7 +296,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
           Expanded(
               flex: 1,
               child: TextFormField(
-                initialValue: "2",
+                controller: mg_value,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -310,13 +346,57 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
         onPressed: () {
           formKey.currentState!.save();
           if (formKey.currentState!.validate()) {
-            setState(() {
-              nexttab = true;
-            });
+            calData();
           }
         },
       ),
     );
+  }
+
+  calData() {
+    setState(() {
+      nexttab = true;
+      r1_waterFine = (double.parse(step5_wetSand) *
+              (double.parse(ms_value.text) - double.parse(as_value.text)) /
+              100)
+          .toStringAsFixed(1);
+      r2_waterCoarse = (double.parse(step4_weight_dry) *
+              (double.parse(mg_value.text) - double.parse(ag_value.text)) /
+              100)
+          .toStringAsFixed(1);
+      r3_actWater = (double.parse(step2_amount_water) -
+              double.parse(r1_waterFine) -
+              double.parse(r2_waterCoarse))
+          .toStringAsFixed(0);
+      r41_fineTune =
+          (1 + (double.parse(ms_value.text) / 100)).toStringAsFixed(2);
+      r4_fineTune = (double.parse(step5_wetSand) * double.parse(r41_fineTune))
+          .toStringAsFixed(0);
+      r51_coarseTune =
+          (1 + (double.parse(mg_value.text) / 100)).toStringAsFixed(2);
+      r5_coarseTune =
+          (double.parse(step4_weight_dry) * double.parse(r51_coarseTune))
+              .toStringAsFixed(0);
+    });
+    listStep6.clear();
+    listStep6.add(as_value.text);
+    listStep6.add(ag_value.text);
+    listStep6.add(ms_value.text);
+    listStep6.add(mg_value.text);
+    listStep6.add(r1_waterFine);
+    listStep6.add(r2_waterCoarse);
+    listStep6.add(r3_actWater);
+    listStep6.add(r4_fineTune);
+    listStep6.add(r5_coarseTune);
+    print("listStep6 = ${listStep6}");
+    setValue();
+  }
+
+  setValue() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setStringList("listStep6", listStep6);
+    // List<String>? savedStrList = prefs.getStringList('listStep3');
+    // print("savedStrList = ${savedStrList}");
   }
 
   Widget summitbt() {
@@ -362,59 +442,62 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
             ),
             const SizedBox(height: 10.0),
             Row(
-              children: const [
-                SizedBox(width: 10.0),
-                Expanded(
+              children: [
+                const SizedBox(width: 10.0),
+                const Expanded(
                     flex: 12,
                     child: Text(
                         "น้ำที่ผิวมวลรวมละเอียด Ws = น้ำหนักทราย x (Ms - As)/100")),
-                Expanded(flex: 2, child: Text("=")),
-                Expanded(flex: 4, child: Text("0.001	kg"))
+                const Expanded(flex: 2, child: Text("=")),
+                Expanded(flex: 4, child: Text("$r1_waterFine	kg"))
               ],
             ),
             const SizedBox(height: 10.0),
             Row(
-              children: const [
+              children: [
+                const SizedBox(width: 10.0),
+                const Expanded(
+                    flex: 12,
+                    child: Text(
+                        "น้ำที่ผิวมวลรวมหยาบ Wg = น้ำหนักหิน x (Mg - Ag)/100")),
+                const Expanded(flex: 2, child: Text("=")),
+                Expanded(flex: 4, child: Text("$r2_waterCoarse	kg"))
+              ],
+            ),
+            const SizedBox(height: 10.0),
+            Row(
+              children: [
+                const SizedBox(width: 10.0),
+                Expanded(
+                    flex: 12,
+                    child: Text(
+                        "ปริมาณน้ำที่ใช้จริง = $step2_amount_water - $r1_waterFine - $r2_waterCoarse")),
+                const Expanded(flex: 2, child: Text("=")),
+                Expanded(flex: 4, child: Text("$r3_actWater	kg"))
+              ],
+            ),
+            const SizedBox(height: 10.0),
+            Row(
+              children: [
                 SizedBox(width: 10.0),
                 Expanded(
                     flex: 12,
                     child: Text(
-                        "น้ำที่ผิวมวลรวมหยาบ Wg = น้ำหนักหิน x (Mg - Ag)/100")),
-                Expanded(flex: 2, child: Text("=")),
-                Expanded(flex: 4, child: Text("0.001	kg"))
+                        "ปรับแก้น้ำหนักมวลรวมละเอียด = $step5_wetSand x $r41_fineTune")),
+                const Expanded(flex: 2, child: Text("=")),
+                Expanded(flex: 4, child: Text("$r4_fineTune	kg"))
               ],
             ),
             const SizedBox(height: 10.0),
             Row(
-              children: const [
-                SizedBox(width: 10.0),
+              children: [
+                const SizedBox(width: 10.0),
                 Expanded(
                     flex: 12,
-                    child: Text("ปริมาณน้ำที่ใช้จริง = 1 - 2565.2 - 2.1")),
-                Expanded(flex: 2, child: Text("=")),
-                Expanded(flex: 4, child: Text("0.001	kg"))
-              ],
-            ),
-            const SizedBox(height: 10.0),
-            Row(
-              children: const [
-                SizedBox(width: 10.0),
-                Expanded(
-                    flex: 12,
-                    child: Text("ปรับแก้น้ำหนักมวลรวมละเอียด = 48400 x 1.06")),
-                Expanded(flex: 2, child: Text("=")),
-                Expanded(flex: 4, child: Text("0.001	kg"))
-              ],
-            ),
-            const SizedBox(height: 10.0),
-            Row(
-              children: const [
-                SizedBox(width: 10.0),
-                Expanded(
-                    flex: 12,
-                    child: Text("ปรับแก้น้ำหนักมวลรวมหยาบ = 210 x 1.02")),
-                Expanded(flex: 2, child: Text("=")),
-                Expanded(flex: 4, child: Text("0.001	kg"))
+                    child: Text(
+                        "ปรับแก้น้ำหนักมวลรวมหยาบ = $step4_weight_dry x $r51_coarseTune")),
+                const Expanded(flex: 2, child: Text("=")),
+                Expanded(flex: 4, child: Text("$r5_coarseTune	kg"))
               ],
             ),
             const SizedBox(height: 10.0),

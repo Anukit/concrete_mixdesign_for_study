@@ -1,4 +1,5 @@
 import 'package:concrete_mixdesign_for_study/pages/tabbar_main.dart';
+import 'package:concrete_mixdesign_for_study/utility/total_utility.dart';
 import 'package:concrete_mixdesign_for_study/widgets/totalwidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -35,16 +36,45 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
   TextEditingController coarse_agg = TextEditingController();
   TextEditingController spec_gra = TextEditingController();
   List<String> listStep5 = [];
-  String step5_index1 = "";
-  String step5_index2 = "";
-  String step5_index3 = "";
-  String step5_index4 = "";
-  String step5_index5 = "";
-  String step5_index6 = "";
-  String step5_index7 = "";
+  String r1_volWater = "";
+  String r2_volCem = "";
+  String r3_bub2per = "";
+  String r4_coaAgg = "";
+  String r5_mixAll = "";
+  String r6_restSand = "";
+  String r7_wetSand = "";
+  //ข้อมูลตารางอื่น
+  String step2_amount_water = "";
+  String step3_cement_qua_ = "";
+  String step2_bubble = "";
+  String step4_weight_dry = "";
   @override
   void initState() {
     super.initState();
+    getListData();
+  }
+
+  getListData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> savedStrList2 = prefs.getStringList('listStep2')!;
+    List<String> savedStrList3 = prefs.getStringList('listStep3')!;
+    List<String> savedStrList4 = prefs.getStringList('listStep4')!;
+    List<String> savedStrList5 = prefs.getStringList('listStep5')!;
+    setState(() {
+      step2_amount_water = savedStrList2[2];
+      step3_cement_qua_ = savedStrList3[1];
+      step2_bubble = savedStrList2[3];
+      step4_weight_dry = savedStrList4[3];
+      if (savedStrList5.isNotEmpty) {
+        cement_spec.text = savedStrList5[0];
+        coarse_agg.text = savedStrList5[1];
+        spec_gra.text = savedStrList5[2];
+      } else {
+        cement_spec.text = "3.15";
+        coarse_agg.text = "2.7";
+        spec_gra.text = "2.65";
+      }
+    });
   }
 
   @override
@@ -95,7 +125,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build1() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -106,7 +136,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
           Expanded(
               flex: 1,
               child: TextFormField(
-                initialValue: "3.15",
+                controller: cement_spec,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -131,7 +161,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build2() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -142,7 +172,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
           Expanded(
               flex: 1,
               child: TextFormField(
-                initialValue: "2.7",
+                controller: coarse_agg,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -172,7 +202,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build3() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -180,7 +210,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
           Expanded(
               flex: 1,
               child: TextFormField(
-                initialValue: "2.65",
+                controller: spec_gra,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -230,19 +260,48 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
         onPressed: () {
           formKey.currentState!.save();
           if (formKey.currentState!.validate()) {
-            setState(() {
-              nexttab = true;
-            });
-            listStep5.clear();
-            listStep5.add(cement_spec.text);
-            listStep5.add(coarse_agg.text);
-            listStep5.add(spec_gra.text);
-            print("listStep5 = ${listStep5}");
-            setValue();
+            calData();
           }
         },
       ),
     );
+  }
+
+  calData() {
+    setState(() {
+      nexttab = true;
+      r1_volWater =
+          (double.parse(step2_amount_water) / 1000).toStringAsFixed(3);
+      r2_volCem = (double.parse(step3_cement_qua_) /
+              (double.parse(cement_spec.text) * 1000))
+          .toStringAsFixed(3);
+      r3_bub2per = (double.parse(step2_bubble) / 100).toString();
+      r4_coaAgg = (double.parse(step4_weight_dry) /
+              (double.parse(coarse_agg.text) * 1000))
+          .toStringAsFixed(3);
+      r5_mixAll = (double.parse(r1_volWater) +
+              double.parse(r2_volCem) +
+              double.parse(r3_bub2per) +
+              double.parse(r4_coaAgg))
+          .toStringAsFixed(3);
+      r6_restSand = (1 - double.parse(r5_mixAll)).toStringAsFixed(3);
+      r7_wetSand =
+          (double.parse(r6_restSand) * double.parse(spec_gra.text) * 1000)
+              .toStringAsFixed(0);
+    });
+    listStep5.clear();
+    listStep5.add(cement_spec.text);
+    listStep5.add(coarse_agg.text);
+    listStep5.add(spec_gra.text);
+    listStep5.add(r1_volWater);
+    listStep5.add(r2_volCem);
+    listStep5.add(r3_bub2per);
+    listStep5.add(r4_coaAgg);
+    listStep5.add(r5_mixAll);
+    listStep5.add(r6_restSand);
+    listStep5.add(r7_wetSand);
+    print("listStep5 = ${listStep5}");
+    setValue();
   }
 
   setValue() async {
@@ -297,41 +356,14 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
             Row(
               children: [
                 const SizedBox(width: 10.0),
-                const Expanded(flex: 12, child: Text("ปริมาตรน้ำ = 1/1,000")),
-                const Expanded(flex: 2, child: Text("=")),
                 Expanded(
-                    flex: 4,
-                    child: Row(
-                      children: [const Text("0.001"), mmm3("m", "3")],
-                    ))
-              ],
-            ),
-            const SizedBox(height: 10.0),
-            Row(
-              children: [
-                const SizedBox(width: 10.0),
-                const Expanded(
-                    flex: 12, child: Text("ปริมาตรปูนซีเมนต์ = 1/1,000")),
-                const Expanded(flex: 2, child: Text("=")),
-                Expanded(
-                    flex: 4,
-                    child: Row(
-                      children: [const Text("0.001"), mmm3("m", "3")],
-                    ))
-              ],
-            ),
-            const SizedBox(height: 10.0),
-            Row(
-              children: [
-                const SizedBox(width: 10.0),
-                const Expanded(
                     flex: 12,
-                    child: Text("ฟองอากาศร้อยละ 2 ในปริมาตรของคอนกรีต")),
+                    child: Text("ปริมาตรน้ำ = $step2_amount_water/1,000")),
                 const Expanded(flex: 2, child: Text("=")),
                 Expanded(
                     flex: 4,
                     child: Row(
-                      children: [const Text("0.001"), mmm3("m", "3")],
+                      children: [Text(r1_volWater), mmm3("m", "3")],
                     ))
               ],
             ),
@@ -339,12 +371,47 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
             Row(
               children: [
                 const SizedBox(width: 10.0),
-                const Expanded(flex: 12, child: Text("มวลรวมหยาบ = 1/1,000")),
+                Expanded(
+                    flex: 12,
+                    child: Text(
+                        "ปริมาตรปูนซีเมนต์ = $step3_cement_qua_ / (${cement_spec.text} x 1,000)")),
                 const Expanded(flex: 2, child: Text("=")),
                 Expanded(
                     flex: 4,
                     child: Row(
-                      children: [const Text("0.001"), mmm3("m", "3")],
+                      children: [Text(r2_volCem), mmm3("m", "3")],
+                    ))
+              ],
+            ),
+            const SizedBox(height: 10.0),
+            Row(
+              children: [
+                const SizedBox(width: 10.0),
+                Expanded(
+                    flex: 12,
+                    child: Text(
+                        "ฟองอากาศร้อยละ $step2_bubble ในปริมาตรของคอนกรีต")),
+                const Expanded(flex: 2, child: Text("=")),
+                Expanded(
+                    flex: 4,
+                    child: Row(
+                      children: [Text(r3_bub2per), mmm3("m", "3")],
+                    ))
+              ],
+            ),
+            const SizedBox(height: 10.0),
+            Row(
+              children: [
+                const SizedBox(width: 10.0),
+                Expanded(
+                    flex: 12,
+                    child: Text(
+                        "มวลรวมหยาบ = $step4_weight_dry / (${coarse_agg.text} x 1,000)")),
+                const Expanded(flex: 2, child: Text("=")),
+                Expanded(
+                    flex: 4,
+                    child: Row(
+                      children: [Text(r4_coaAgg), mmm3("m", "3")],
                     ))
               ],
             ),
@@ -359,7 +426,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
                 Expanded(
                     flex: 4,
                     child: Row(
-                      children: [const Text("0.001"), mmm3("m", "3")],
+                      children: [Text(r5_mixAll), mmm3("m", "3")],
                     ))
               ],
             ),
@@ -367,14 +434,14 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
             Row(
               children: [
                 const SizedBox(width: 10.0),
-                const Expanded(
+                Expanded(
                     flex: 12,
-                    child: Text("ปริมาตรส่วนที่เหลือเป็นทราย = 1/1,000")),
+                    child: Text("ปริมาตรส่วนที่เหลือเป็นทราย = 1-$r5_mixAll")),
                 const Expanded(flex: 2, child: Text("=")),
                 Expanded(
                     flex: 4,
                     child: Row(
-                      children: [const Text("0.001"), mmm3("m", "3")],
+                      children: [Text(r6_restSand), mmm3("m", "3")],
                     ))
               ],
             ),
@@ -382,13 +449,15 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
             Row(
               children: [
                 const SizedBox(width: 10.0),
-                const Expanded(
-                    flex: 12, child: Text("น้ำหนักของทราย = 1/1,000")),
+                Expanded(
+                    flex: 12,
+                    child: Text(
+                        "น้ำหนักของทราย = $r6_restSand x ${spec_gra.text} x 1,000")),
                 const Expanded(flex: 2, child: Text("=")),
                 Expanded(
                     flex: 4,
                     child: Row(
-                      children: const [Text("0.001"), Text("\tkg")],
+                      children: [Text(r7_wetSand), Text("\tkg")],
                     ))
               ],
             ),

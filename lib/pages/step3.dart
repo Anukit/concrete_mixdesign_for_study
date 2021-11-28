@@ -35,9 +35,29 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
   TextEditingController ratio_waterCem = TextEditingController();
   TextEditingController cement_qua = TextEditingController();
   List<String> listStep3 = [];
+  String amount_water_Step2 = "";
   @override
   void initState() {
     super.initState();
+    getListData();
+  }
+
+  getListData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> savedStrList1 = prefs.getStringList('listStep1')!;
+    List<String> savedStrList2 = prefs.getStringList('listStep2')!;
+    List<String> savedStrList3 = prefs.getStringList('listStep3')!;
+    setState(() {
+      fcr_value.text = savedStrList1[4];
+      amount_water_Step2 = savedStrList2[2];
+      if (savedStrList3.isNotEmpty) {
+        ratio_waterCem.text = savedStrList3[0];
+        cement_qua.text = savedStrList3[1];
+      } else {
+        ratio_waterCem.text = "0.61";
+        cement_qua.text = "";
+      }
+    });
   }
 
   @override
@@ -101,7 +121,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build1() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -118,7 +138,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
               flex: 1,
               child: TextFormField(
                 readOnly: true,
-                initialValue: "256",
+                controller: fcr_value,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -130,9 +150,9 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(context, errorText: "กรอกค่า"),
                 ]),
-                onSaved: (value) {
-                  fcr_value.text = value!;
-                },
+                // onSaved: (value) {
+                //   fcr_value.text = value!;
+                // },
               )),
           const SizedBox(width: 10.0),
           Expanded(flex: 1, child: kilogramCM2()),
@@ -143,7 +163,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build2() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: const [
@@ -158,7 +178,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build3() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -166,7 +186,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
           Expanded(
               flex: 1,
               child: TextFormField(
-                initialValue: "0.61",
+                controller: ratio_waterCem,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -191,7 +211,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build4() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -199,6 +219,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
           Expanded(
               flex: 1,
               child: TextFormField(
+                controller: cement_qua,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -207,9 +228,9 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
                       TextStyle(fontSize: 18, color: Colors.grey.shade600),
                   errorStyle: const TextStyle(color: Colors.red, fontSize: 14),
                 ),
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(context, errorText: "กรอกค่า"),
-                ]),
+                // validator: FormBuilderValidators.compose([
+                //   FormBuilderValidators.required(context, errorText: "กรอกค่า"),
+                // ]),
                 onSaved: (value) {
                   cement_qua.text = value!;
                 },
@@ -250,9 +271,11 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
           if (formKey.currentState!.validate()) {
             setState(() {
               nexttab = true;
+              cement_qua.text = (double.parse(amount_water_Step2) /
+                      double.parse(ratio_waterCem.text))
+                  .toStringAsFixed(0);
             });
             listStep3.clear();
-            listStep3.add(fcr_value.text);
             listStep3.add(ratio_waterCem.text);
             listStep3.add(cement_qua.text);
             print("listStep3 = ${listStep3}");
@@ -266,8 +289,6 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
   setValue() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setStringList("listStep3", listStep3);
-    // List<String>? savedStrList = prefs.getStringList('listStep3');
-    // print("savedStrList = ${savedStrList}");
   }
 
   Widget summitbt() {

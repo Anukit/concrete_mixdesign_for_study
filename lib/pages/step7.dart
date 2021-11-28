@@ -4,6 +4,7 @@ import 'package:concrete_mixdesign_for_study/widgets/totalwidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Step7 extends StatelessWidget {
   Step7();
@@ -31,6 +32,13 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
   String valuetest = "240";
   bool nexttab = false;
   final formKey = GlobalKey<FormState>();
+  //ครั้งแรก
+  TextEditingController cement_first = TextEditingController();
+  TextEditingController water_first = TextEditingController();
+  TextEditingController sand_first = TextEditingController();
+  TextEditingController rock_first = TextEditingController();
+  TextEditingController total_weight_first = TextEditingController();
+  //หลังคำนวณ
   TextEditingController cement_value = TextEditingController();
   TextEditingController water_value = TextEditingController();
   TextEditingController sand_value = TextEditingController();
@@ -40,6 +48,26 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     super.initState();
+    getListData();
+  }
+
+  getListData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> savedStrList3 = prefs.getStringList('listStep3')!;
+    List<String> savedStrList6 = prefs.getStringList('listStep6')!;
+    setState(() {
+      print("savedStrList6 = ${savedStrList6}");
+      cement_first.text = savedStrList3[1];
+      water_first.text = savedStrList6[6];
+      sand_first.text = savedStrList6[7];
+      rock_first.text = savedStrList6[8];
+      total_weight_first.text = (double.parse(cement_first.text) +
+              double.parse(water_first.text) +
+              double.parse(sand_first.text) +
+              double.parse(rock_first.text))
+          .toStringAsFixed(0);
+      mix_concrete.text = "0.17";
+    });
   }
 
   @override
@@ -109,7 +137,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build1() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -124,7 +152,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
               flex: 1,
               child: TextFormField(
                 readOnly: true,
-                initialValue: "303",
+                controller: cement_first,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -133,12 +161,12 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
                       TextStyle(fontSize: 18, color: Colors.grey.shade600),
                   errorStyle: const TextStyle(color: Colors.red, fontSize: 14),
                 ),
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(context, errorText: "กรอกค่า"),
-                ]),
-                onSaved: (value) {
-                  cement_value.text = value!;
-                },
+                // validator: FormBuilderValidators.compose([
+                //   FormBuilderValidators.required(context, errorText: "กรอกค่า"),
+                // ]),
+                // onSaved: (value) {
+                //   cement_value.text = value!;
+                // },
               )),
           const SizedBox(width: 10.0),
           const Expanded(
@@ -154,7 +182,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build2() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -169,7 +197,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
               flex: 1,
               child: TextFormField(
                 readOnly: true,
-                initialValue: "109",
+                controller: water_first,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -178,12 +206,12 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
                       TextStyle(fontSize: 18, color: Colors.grey.shade600),
                   errorStyle: const TextStyle(color: Colors.red, fontSize: 14),
                 ),
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(context, errorText: "กรอกค่า"),
-                ]),
-                onSaved: (value) {
-                  water_value.text = value!;
-                },
+                // validator: FormBuilderValidators.compose([
+                //   FormBuilderValidators.required(context, errorText: "กรอกค่า"),
+                // ]),
+                // onSaved: (value) {
+                //   water_value.text = value!;
+                // },
               )),
           const SizedBox(width: 10.0),
           const Expanded(
@@ -199,7 +227,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build3() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -214,7 +242,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
               flex: 1,
               child: TextFormField(
                 readOnly: true,
-                initialValue: "916",
+                controller: sand_first,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -223,12 +251,12 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
                       TextStyle(fontSize: 18, color: Colors.grey.shade600),
                   errorStyle: const TextStyle(color: Colors.red, fontSize: 14),
                 ),
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(context, errorText: "กรอกค่า"),
-                ]),
-                onSaved: (value) {
-                  sand_value.text = value!;
-                },
+                // validator: FormBuilderValidators.compose([
+                //   FormBuilderValidators.required(context, errorText: "กรอกค่า"),
+                // ]),
+                // onSaved: (value) {
+                //   sand_value.text = value!;
+                // },
               )),
           const SizedBox(width: 10.0),
           const Expanded(
@@ -244,7 +272,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build4() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -259,7 +287,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
               flex: 1,
               child: TextFormField(
                 readOnly: true,
-                initialValue: "1028",
+                controller: rock_first,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -268,12 +296,12 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
                       TextStyle(fontSize: 18, color: Colors.grey.shade600),
                   errorStyle: const TextStyle(color: Colors.red, fontSize: 14),
                 ),
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(context, errorText: "กรอกค่า"),
-                ]),
-                onSaved: (value) {
-                  rock_value.text = value!;
-                },
+                // validator: FormBuilderValidators.compose([
+                //   FormBuilderValidators.required(context, errorText: "กรอกค่า"),
+                // ]),
+                // onSaved: (value) {
+                //   rock_value.text = value!;
+                // },
               )),
           const SizedBox(width: 10.0),
           const Expanded(
@@ -289,7 +317,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build5() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -304,7 +332,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
               flex: 1,
               child: TextFormField(
                 readOnly: true,
-                initialValue: "2376",
+                controller: total_weight_first,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -313,12 +341,12 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
                       TextStyle(fontSize: 18, color: Colors.grey.shade600),
                   errorStyle: const TextStyle(color: Colors.red, fontSize: 14),
                 ),
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(context, errorText: "กรอกค่า"),
-                ]),
-                onSaved: (value) {
-                  total_weight.text = value!;
-                },
+                // validator: FormBuilderValidators.compose([
+                //   FormBuilderValidators.required(context, errorText: "กรอกค่า"),
+                // ]),
+                // onSaved: (value) {
+                //   total_weight.text = value!;
+                // },
               )),
           const SizedBox(width: 10.0),
           const Expanded(
@@ -334,7 +362,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build1New() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -358,12 +386,12 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
                       TextStyle(fontSize: 18, color: Colors.grey.shade600),
                   errorStyle: const TextStyle(color: Colors.red, fontSize: 14),
                 ),
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(context, errorText: "กรอกค่า"),
-                ]),
-                onSaved: (value) {
-                  // valuetest = value!;
-                },
+                // validator: FormBuilderValidators.compose([
+                //   FormBuilderValidators.required(context, errorText: "กรอกค่า"),
+                // ]),
+                // onSaved: (value) {
+                //   // valuetest = value!;
+                // },
               )),
           const SizedBox(width: 10.0),
           const Expanded(
@@ -379,7 +407,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build2New() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -403,12 +431,12 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
                       TextStyle(fontSize: 18, color: Colors.grey.shade600),
                   errorStyle: const TextStyle(color: Colors.red, fontSize: 14),
                 ),
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(context, errorText: "กรอกค่า"),
-                ]),
-                onSaved: (value) {
-                  //valuetest = value!;
-                },
+                // validator: FormBuilderValidators.compose([
+                //   FormBuilderValidators.required(context, errorText: "กรอกค่า"),
+                // ]),
+                // onSaved: (value) {
+                //   //valuetest = value!;
+                // },
               )),
           const SizedBox(width: 10.0),
           const Expanded(
@@ -424,7 +452,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build3New() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -448,12 +476,12 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
                       TextStyle(fontSize: 18, color: Colors.grey.shade600),
                   errorStyle: const TextStyle(color: Colors.red, fontSize: 14),
                 ),
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(context, errorText: "กรอกค่า"),
-                ]),
-                onSaved: (value) {
-                  //valuetest = value!;
-                },
+                // validator: FormBuilderValidators.compose([
+                //   FormBuilderValidators.required(context, errorText: "กรอกค่า"),
+                // ]),
+                // onSaved: (value) {
+                //   //valuetest = value!;
+                // },
               )),
           const SizedBox(width: 10.0),
           const Expanded(
@@ -469,7 +497,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build4New() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -493,12 +521,12 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
                       TextStyle(fontSize: 18, color: Colors.grey.shade600),
                   errorStyle: const TextStyle(color: Colors.red, fontSize: 14),
                 ),
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(context, errorText: "กรอกค่า"),
-                ]),
-                onSaved: (value) {
-                  //valuetest = value!;
-                },
+                // validator: FormBuilderValidators.compose([
+                //   FormBuilderValidators.required(context, errorText: "กรอกค่า"),
+                // ]),
+                // onSaved: (value) {
+                //   //valuetest = value!;
+                // },
               )),
           const SizedBox(width: 10.0),
           const Expanded(
@@ -514,7 +542,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build5New() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -538,12 +566,12 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
                       TextStyle(fontSize: 18, color: Colors.grey.shade600),
                   errorStyle: const TextStyle(color: Colors.red, fontSize: 14),
                 ),
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(context, errorText: "กรอกค่า"),
-                ]),
-                onSaved: (value) {
-                  //valuetest = value!;
-                },
+                // validator: FormBuilderValidators.compose([
+                //   FormBuilderValidators.required(context, errorText: "กรอกค่า"),
+                // ]),
+                // onSaved: (value) {
+                //   //valuetest = value!;
+                // },
               )),
           const SizedBox(width: 10.0),
           const Expanded(
@@ -627,12 +655,15 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
               nexttab = true;
               double mix = double.parse(mix_concrete.text);
               cement_value.text =
-                  (double.parse(cement_value.text) * mix).toStringAsFixed(2);
-              water_value.text = (double.parse(water_value.text) * mix).toStringAsFixed(2);
-              sand_value.text = (double.parse(sand_value.text) * mix).toStringAsFixed(2);
-              rock_value.text = (double.parse(rock_value.text) * mix).toStringAsFixed(2);
-              total_weight.text =
-                  (double.parse(total_weight.text) * mix).toStringAsFixed(2);
+                  (double.parse(cement_first.text) * mix).toStringAsFixed(0);
+              water_value.text =
+                  (double.parse(water_first.text) * mix).toStringAsFixed(0);
+              sand_value.text =
+                  (double.parse(sand_first.text) * mix).toStringAsFixed(0);
+              rock_value.text =
+                  (double.parse(rock_first.text) * mix).toStringAsFixed(0);
+              total_weight.text = (double.parse(total_weight_first.text) * mix)
+                  .toStringAsFixed(0);
             });
           }
         },

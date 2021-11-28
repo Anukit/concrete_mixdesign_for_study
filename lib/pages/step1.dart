@@ -43,6 +43,28 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     super.initState();
+    getListData();
+  }
+
+  getListData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String> savedStrList = prefs.getStringList('listStep1')!;
+    setState(() {
+      if (savedStrList.isNotEmpty) {
+        fc.text = savedStrList[0];
+        percent_comp.text = savedStrList[1];
+        s.text = savedStrList[2];
+        k.text = savedStrList[3];
+        fcr_value.text = savedStrList[4];
+      } else {
+        fc.text = "240";
+        percent_comp.text = "5";
+        s.text = "10";
+        k.text = "1.645";
+        fcr_value.text = "";
+      }
+    });
+    print("listStep1 = ${listStep1}");
   }
 
   @override
@@ -152,7 +174,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build1() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -160,7 +182,8 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
           Expanded(
               flex: 1,
               child: TextFormField(
-                initialValue: "240",
+                //initialValue: listStep1[0],
+                controller: fc,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -185,7 +208,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build2() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -193,7 +216,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
           Expanded(
               flex: 1,
               child: TextFormField(
-                initialValue: "5",
+                controller: percent_comp,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -223,7 +246,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build3() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -231,7 +254,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
           Expanded(
               flex: 1,
               child: TextFormField(
-                initialValue: "10",
+                controller: s,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -256,7 +279,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build4() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -264,7 +287,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
           Expanded(
               flex: 1,
               child: TextFormField(
-                initialValue: "1.645",
+                controller: k,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
                 decoration: InputDecoration(
@@ -289,7 +312,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
 
   Widget build5() {
     return Card(
-      color: Colors.yellow.shade200,
+      color: Colors.blue[100],
       child: Row(
         children: [
           const SizedBox(width: 10.0),
@@ -318,7 +341,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
                 //   FormBuilderValidators.required(context, errorText: "กรอกค่า"),
                 // ]),
                 onSaved: (value) {
-                  valuetest = value!;
+                  fcr_value.text = value!;
                 },
               )),
           const SizedBox(width: 10.0),
@@ -354,7 +377,8 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
             double s_value = double.parse(s.text);
             double k_value = double.parse(k.text);
             setState(() {
-              fcr_value.text = (fc_value + (s_value * k_value)).toString();
+              fcr_value.text =
+                  (fc_value + (s_value * k_value)).toStringAsFixed(2);
               nexttab = true;
             });
             listStep1.clear();
