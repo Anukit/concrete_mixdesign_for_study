@@ -378,7 +378,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
             double k_value = double.parse(k.text);
             setState(() {
               fcr_value.text =
-                  (fc_value + (s_value * k_value)).toStringAsFixed(2);
+                  (fc_value + (s_value * k_value)).toStringAsFixed(0);
               nexttab = true;
             });
             listStep1.clear();
