@@ -95,6 +95,11 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
                         "\t\t\t\t\t\tในการออกแบบส่วนผสมคอนกรีต จะกำหนดกำลังอัดเป้าหมายให้มีค่าสูงกว่ากำลังอัดที่ต้องการ เป็นไปตามสมการ",
                         style: TextStyle(color: Colors.black, fontSize: 15),
                       ),
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text("\t\t\t\t\t\tสำหรับปูนซีเมนต์ type 1"),
+                      ),
+                       SizedBox(height: 10.0),
                       fcrfull(),
                       const Divider(),
                       Row(

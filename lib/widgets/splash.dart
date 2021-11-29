@@ -23,8 +23,8 @@ class _SplashPageState extends State<SplashPage> {
       navigateRoute: TabbarMain(0),
       duration: 3000,
       imageSize: 200,
-      //imageSrc: "assets/images/LogoApp.png",
-      text: "Concrete mixdesign for study",
+      imageSrc: "assets/images/logoLoad.png",
+      //text: "Concrete mixdesign for study",
       backgroundColor: Colors.white,
     );
   }
