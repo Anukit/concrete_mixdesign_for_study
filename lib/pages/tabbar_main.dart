@@ -47,9 +47,9 @@ class _TabbarMainState extends State<TabbarMain>
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 5.0),
+            //const SizedBox(height: 5.0),
             Text(
-              '*หมายเหตุ เริ่มที่ Step 1 จนถึง 7 ไม่สามารถข้าม Step ได้',
+              '*หมายเหตุ เริ่มที่ Step 1 จนถึง 7 ไม่สามารถข้าม Step ได้\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tผู้ใช้ควรมีความรู้ด้านปฏิภาคส่วนผสมคอนกรีต',
               style: TextStyle(color: Colors.grey.shade400, fontSize: 13),
             ),
             // const SizedBox(height: 5.0),
@@ -61,7 +61,7 @@ class _TabbarMainState extends State<TabbarMain>
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 15),
+                      fontSize: 12),
                 ),
                 TextButton(
                     onPressed: () {
@@ -71,7 +71,10 @@ class _TabbarMainState extends State<TabbarMain>
                     },
                     child: const Text(
                       "Reset",
-                      style: TextStyle(color: Colors.red, fontSize: 15),
+                      style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12),
                     ))
               ],
             )

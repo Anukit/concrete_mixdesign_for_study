@@ -132,7 +132,20 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
                           SizedBox(width: 28.0),
                           Expanded(
                             child: Text(
-                              "ks = ค่าเบี่ยงเบนมาตรฐานจากผลการทดสอบกำลังคอนกรีต",
+                              "s = ค่าเบี่ยงเบนมาตรฐานจากผลการทดสอบกำลังคอนกรีตจากก้อนตัวอย่าง 30 ค่าหรือมากกว่า",
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 15),
+                            ),
+                          )
+                        ],
+                      ),
+                       SizedBox(height: 10.0),
+                      Row(
+                        children: const [
+                          SizedBox(width: 28.0),
+                          Expanded(
+                            child: Text(
+                              "k = ค่าคงที่",
                               style:
                                   TextStyle(color: Colors.black, fontSize: 15),
                             ),

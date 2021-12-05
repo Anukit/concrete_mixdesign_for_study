@@ -54,7 +54,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
         ratio_waterCem.text = savedStrList3[0];
         cement_qua.text = savedStrList3[1];
       } else {
-        ratio_waterCem.text = "0.61";
+        ratio_waterCem.text = "0.56";
         cement_qua.text = "";
       }
     });
