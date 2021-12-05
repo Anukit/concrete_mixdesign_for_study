@@ -59,7 +59,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
       } else {
         fc.text = "240";
         percent_comp.text = "5";
-        s.text = "10";
+        s.text = "30";
         k.text = "1.645";
         fcr_value.text = "";
       }
