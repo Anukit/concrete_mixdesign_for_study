@@ -135,7 +135,7 @@ class _MyPageState extends State<_MyPage> with AutomaticKeepAliveClientMixin {
           Expanded(
               flex: 1,
               child: TextFormField(
-                readOnly: true,
+                //readOnly: true,
                 controller: large_add,
                 keyboardType: TextInputType.number,
                 style: const TextStyle(fontSize: 18),
